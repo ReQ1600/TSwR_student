@@ -17,20 +17,24 @@ end = 5
 traj_gen = Sinusoidal(np.array([0., 1.]), np.array([2., 2.]), np.array([0., 0.]))
 # traj_gen = Poly3(np.array([0., 0.]), np.array([pi/4, pi/6]), end)
 
-b_est_1 = None
-b_est_2 = None
-kp_est_1 = None
-kp_est_2 = None
-kd_est_1 = None
-kd_est_2 = None
-p1 = None
-p2 = None
+b_est_1 = 2.0
+b_est_2 = 13.0
+
+# kp = omega^2, kd = 2 * omega
+# omega = 15 -> kp = 225, kd = 30
+kp_est_1 = 225.0
+kp_est_2 = 225.0
+kd_est_1 = 30.0
+kd_est_2 = 30.0
+
+p1 = 50.0
+p2 = 50.0
 
 q0, qdot0, _ = traj_gen.generate(0.)
 q1_0 = np.array([q0[0], qdot0[0]])
 q2_0 = np.array([q0[1], qdot0[1]])
 controller = ADRController(Tp, params=[[b_est_1, kp_est_1, kd_est_1, p1, q1_0],
-                                       [b_est_2, kp_est_2, kd_est_2, p2, q2_0]])
+                                       [b_est_2, kp_est_2, kd_est_2, p2, q2_0]], adaptive_b=True)
 
 Q, Q_d, u, T = simulate("PYBULLET", traj_gen, controller, Tp, end)
 
